@@ -1,0 +1,65 @@
+#Task1)
+
+Step No. Terminal 1 							Step No. Terminal 2
+1 Start a transaction and display the accounts information. 		2 Start a transaction and update the username for “Alice Jones” as “ajones”
+
+BEGIN Transaction ISOLATION LEVEL REPEATABLE READ;			Begin;
+SELECT * FROM account;							Update account set username ='ajones' where username ='jones'
+										
+										
+							
+3 Display again the accounts table 					4 Display again the accounts table
+SELECT * FROM account;							SELECT * FROM account;	
+In 1st session, username is not updates, whereas for 2nd session we see new username 'ajones'
+				
+									5 Commit the changes and compare again both sessions.
+SELECT * FROM account;							COMMIT;
+									SELECT * FROM account;
+
+Here both versions have updated username for Alice Jone (which is ajones)
+									
+									6 Start a new transaction
+									Begin;
+Here DBMS protection system is executed and it doesn't allow to make concurrent transactions. So we need to start again
+ 
+7 Update the balance for the Alice’s account by +10.			8 Update the balance for the Alice’s account by +20
+Begin;									Begin;
+Update account SET balance=balance+10					Update account SET balance=balance+20
+Where fullname='AliceJones';						Where fullname='AliceJones';
+									ERROR:  current transaction is aborted, commands ignored until end of transaction block
+									Here it also doesn't allow to make concurrent updates on the same columns
+
+SELECT * FROM account;							
+9 Commit the changes. 							10 Rollback 
+
+#Task2)
+
+Step No. Terminal 1 							Step No. Terminal 2 
+1   Begin								2   Begin
+3   SELECT * from account						4   UPDATE account SET group_id=2 
+									    Where username='bbrown';
+5   SELECT * from account
+//Here are no changes for terminal 1. 
+//bob's group is still 3
+//mike's balance = 73 before updating balance
+  bob's balance = 100 before updating balance
+6   UPDATE account SET balance=balance+15 
+Where group_id=2;
+
+After update, mike's balance = 88, bob's balance = 100. So no changes have been made for bob's balance! 
+
+#Task3) 
+
+Step No. Terminal 1 							Step No. Terminal 2
+1  BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;			2 BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+3  SELECT SUM(balance) AS balance					4 UPDATE account SET group_id=2 
+FROM account 								  Where username='bbrown';
+WHERE group_id=2;
+5 SELECT * from account							
+  where group_id=2;
+
+Here we don't see Bob in 2nd group
+6 SELECT SUM(balance) AS balance
+FROM account
+WHERE group_id=2;	
+7 Commit;								8 Commit;
