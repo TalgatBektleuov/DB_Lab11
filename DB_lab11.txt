@@ -62,4 +62,5 @@ Here we don't see Bob in 2nd group
 6 SELECT SUM(balance) AS balance
 FROM account
 WHERE group_id=2;	
+//The sum did not change, the only balance that it sums is Mike's balance!
 7 Commit;								8 Commit;
